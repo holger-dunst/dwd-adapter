@@ -1,0 +1,77 @@
+{
+  "name": "dwd-local-weather-adapter",
+  "version": "0.1.0",
+  "description": "Ruft die Wetterdaten einer lokalen DWD-Messstation ab",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "npm run build-ts",
+    "build-ts": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holger-dunst/dwd-adapter.git"
+  },
+  "author": "Holger Dunst",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/holger-dunst/dwd-adapter/issues"
+  },
+  "homepage": "https://github.com/holger-dunst/dwd-adapter#readme",
+  "keywords": [
+    "mozilla",
+    "iot",
+    "adapter",
+    "dwd",
+    "weather"
+  ],
+  "files": [
+    "LICENSE",
+    "SHA256SUMS",
+    "lib/index.js",
+    "lib/dwd.js",
+    "lib/dwd-weather-adapter.js",
+    "lib/dwd-weather-device.js",
+    "lib/temperature-property.js",
+    "lib/cloudcover-property.js",
+    "lib/humidity-property.js",
+    "lib/relative-precipitation-property.js",
+    "lib/total-precipitation-property.js",
+    "lib/pressure-property.js",
+    "lib/winddirection-property.js",
+    "lib/windspeed-property.js",
+    "manifest.json"
+  ],
+  "moziot": {
+    "api": {
+      "min": 2,
+      "max": 2
+    },
+    "plugin": true,
+    "exec": "{nodeLoader} {path}",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "mosmixStation": {
+          "type": "string",
+          "title": "Der Name der Messstation"
+        },
+        "lookAheadHours": {
+          "type": "number",
+          "title": "Die Vorhersage in Stunden"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "request": "^2.88.2",
+    "sax": "^1.2.4",
+    "sax-ts": "^1.2.9",
+    "unzipper": "^0.10.11"
+  },
+  "devDependencies": {
+    "@types/request": "^2.48.4",
+    "@types/sax": "^1.2.1",
+    "@types/unzipper": "^0.10.3"
+  }
+}
