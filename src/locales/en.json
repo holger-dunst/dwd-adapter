@@ -1,0 +1,10 @@
+{
+  "temperature2mAboveSurface": "Temperature",
+  "humidity": "Humidity",
+  "effectiveCloudCover": "Cloud cover",
+  "surfacePressureReduced": "Air pressure",
+  "windSpeed": "Wind speed",
+  "windDirection": "Wind direction",
+  "probabilityPrecipitation": "P Precipitation (last hour)",
+  "totalPrecipitationNext24Hours": "Precipitation quantity n. 24h"
+}

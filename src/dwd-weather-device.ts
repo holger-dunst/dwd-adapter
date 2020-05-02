@@ -8,6 +8,7 @@ import { WindSpeedProperty } from './windspeed-property';
 import { WindDirectionProperty } from './winddirection-property';
 import { TotalPrecipitationProperty } from './total-precipitation-property';
 import { ProbabilityPrecipitationProperty } from './relative-precipitation-property';
+import i18n from 'i18n';
 
 const manifest = require('../manifest.json');
 
@@ -35,14 +36,14 @@ export class DwdWeatherDevice extends Device {
         // DD 0 bis 360 Grad Wind direction *
         // wwP % (0..100) Probability: Occurrence of precipitation within the last hour *
         // RR1c kg/m2 Total precipitation during the last hour
-        this.temperature2mAboveSurfaceProperty = new TemperatureProperty(this, 'temperature2mAboveSurface', 'Temperatur');
-        this.humidityProperty = new HumidityProperty(this, 'humidity', 'Luftfeuchtigkeit');
-        this.effectiveCloudCoverProperty = new CloudCoverProperty(this, 'effectiveCloudCover', 'Wolkendecke');
-        this.surfacePressureReducedProperty = new PressureProperty(this, 'surfacePressureReduced', 'Luftdruck');
-        this.windSpeedProperty = new WindSpeedProperty(this, 'windSpeed', 'Windgeschwindigkeit');
-        this.windDirectionProperty = new WindDirectionProperty(this, 'windDrection', 'Windrichtung');
-        this.probabilityPrecipitationProperty = new ProbabilityPrecipitationProperty(this, 'probabilityPrecipitation', 'P Niederschläge (letzte Stunde)');
-        this.totalPrecipitationNext24HoursProperty = new TotalPrecipitationProperty(this, 'totalPrecipitationNext24Hours', 'Niederschlagsmenge n. 24h');
+        this.temperature2mAboveSurfaceProperty = new TemperatureProperty(this, 'temperature2mAboveSurface', i18n.__('temperature2mAboveSurface'));
+        this.humidityProperty = new HumidityProperty(this, 'humidity', i18n.__('humidity'));
+        this.effectiveCloudCoverProperty = new CloudCoverProperty(this, 'effectiveCloudCover', i18n.__('effectiveCloudCover'));
+        this.surfacePressureReducedProperty = new PressureProperty(this, 'surfacePressureReduced', i18n.__('surfacePressureReduced'));
+        this.windSpeedProperty = new WindSpeedProperty(this, 'windSpeed', i18n.__('windSpeed'));
+        this.windDirectionProperty = new WindDirectionProperty(this, 'windDirection', i18n.__('windDirection'));
+        this.probabilityPrecipitationProperty = new ProbabilityPrecipitationProperty(this, 'probabilityPrecipitation', i18n.__('probabilityPrecipitation'));
+        this.totalPrecipitationNext24HoursProperty = new TotalPrecipitationProperty(this, 'totalPrecipitationNext24Hours', i18n.__('totalPrecipitationNext24Hours'));
     }
 
     update(data: WeatherData | null) {

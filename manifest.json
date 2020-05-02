@@ -1,10 +1,10 @@
 {
   "manifest_version": 1,
   "id": "dwd-local-weather-adapter",
-  "name": "Lokales Wetter (DWD)",
-  "short_name": "Wetter",
+  "name": "Local Weather (DWD)",
+  "short_name": "Weather",
   "version": "0.1.0",
-  "description": "Ruft die Wetterdaten einer lokalen DWD-Messstation ab",
+  "description": "Retrieves weather data from a local DWD measuring station",
   "homepage_url": "https://github.com/holger-dunst/dwd-adapter#readme",
   "license": "Apache-2.0",
   "author": "Holger Dunst",
@@ -19,14 +19,14 @@
   "options": {
     "schema": {
       "type": "object",
+      "required": [
+        "mosmixStation"
+      ],
       "properties": {
         "mosmixStation": {
           "type": "string",
-          "title": "Der Name der Messstation"
-        },
-        "lookAheadHours": {
-          "type": "number",
-          "title": "Die Vorhersage in Stunden"
+          "title": "Station id",
+          "description": "The Id of the measuring station"
         }
       }
     }

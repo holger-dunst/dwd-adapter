@@ -1,12 +1,17 @@
 {
   "name": "dwd-local-weather-adapter",
   "version": "0.1.0",
-  "description": "Ruft die Wetterdaten einer lokalen DWD-Messstation ab",
+  "description": "Retrieves weather data from a local DWD measuring station",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "npm run build-ts",
-    "build-ts": "tsc"
+    "reinstall": "rimraf node_modules && npm install",
+    "clean": "rimraf lib",
+    "mkdirs": "mkdir -p lib/locales",
+    "build": "npm run clean && npm run mkdirs && npm run build-ts && npm run copy:locales",
+    "build-ts": "tsc",
+    "copy:locales": "cp -r src/locales/* lib/locales/",
+    "copy": "npm run copy:locales"
   },
   "repository": {
     "type": "git",
@@ -40,6 +45,8 @@
     "lib/pressure-property.js",
     "lib/winddirection-property.js",
     "lib/windspeed-property.js",
+    "lib/locales/de.json",
+    "lib/locales/en.json",
     "manifest.json"
   ],
   "moziot": {
@@ -51,27 +58,30 @@
     "exec": "{nodeLoader} {path}",
     "schema": {
       "type": "object",
+      "required": [
+        "mosmixStation"
+      ],
       "properties": {
         "mosmixStation": {
           "type": "string",
-          "title": "Der Name der Messstation"
-        },
-        "lookAheadHours": {
-          "type": "number",
-          "title": "Die Vorhersage in Stunden"
+          "title": "Station id",
+          "description": "The Id of the measuring station"
         }
       }
     }
   },
   "dependencies": {
+    "i18n": "^0.9.0",
     "request": "^2.88.2",
     "sax": "^1.2.4",
     "sax-ts": "^1.2.9",
     "unzipper": "^0.10.11"
   },
   "devDependencies": {
+    "@types/i18n": "^0.8.6",
     "@types/request": "^2.48.4",
     "@types/sax": "^1.2.1",
-    "@types/unzipper": "^0.10.3"
+    "@types/unzipper": "^0.10.3",
+    "rimraf": "^3.0.2"
   }
 }

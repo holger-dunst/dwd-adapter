@@ -11,4 +11,6 @@ To set up a device, the station code of the local weather station is required.
 Check the [catalog of stations](https://www.dwd.de/DE/leistungen/met_verfahren_mosmix/mosmix_stationskatalog.html)
 for the station id. It is the third column with the name 'id'. E.g. City TOENISVORST has the id 'H522'.
 
+Currently the adapter supports German and English. Further languages desired.
+
 Thanks to Christian Stein for his node-red implementation 'node-red-contrib-dwd-local-weather' on which this adapter is based.

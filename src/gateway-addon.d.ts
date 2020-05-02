@@ -51,7 +51,27 @@ declare module 'gateway-addon' {
         public findProperty(propertyName: string): Property;
     }
 
+    interface Preferences {
+        language: string;
+        units: {
+            temperature: string
+        };
+    }
+
+    interface UserProfile {
+        addonsDir: string;
+        baseDir: string;
+        configDir: string;
+        dataDir: string;
+        mediaDir: string;
+        logDir: string;
+        gatewayDir: string;
+    }
+
     class Adapter {
+        public userProfile: UserProfile;
+        public preferences: Preferences;
+
         public devices: { [id: string]: Device };
 
         constructor(addonManager: any, id: string, packageName: string);

@@ -1,0 +1,10 @@
+{
+  "temperature2mAboveSurface": "Temperatur",
+  "humidity": "Luftfeuchtigkeit",
+  "effectiveCloudCover": "Wolkendecke",
+  "surfacePressureReduced": "Luftdruck",
+  "windSpeed": "Windgeschwindigkeit",
+  "windDirection": "Windrichtung",
+  "probabilityPrecipitation": "P Niederschläge (letzte Stunde)",
+  "totalPrecipitationNext24Hours": "Niederschlagsmenge n. 24h"
+}
