@@ -33,7 +33,7 @@ declare module 'gateway-addon' {
         public events: Map<String, EventDescription>;
         protected '@context': string;
         protected '@type': string[];
-        protected id: string;
+        public id: string;
         protected name: string;
         protected description: string;
         protected adapter: Adapter;

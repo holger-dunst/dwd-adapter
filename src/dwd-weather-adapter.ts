@@ -1,9 +1,13 @@
-import { Adapter } from 'gateway-addon';
-import { DWDService, WeatherConfig } from './dwd';
+import { Adapter, Device } from 'gateway-addon';
+import { WeatherConfig } from './dwd';
 import { DwdWeatherDevice } from './dwd-weather-device';
 import i18n from 'i18n';
 
 export class DWDWeatherAdapter extends Adapter {
+    private knownStations: Set<string> = new Set();
+
+    private readonly station: string;
+
     constructor(addonManager: any, manifest: any) {
         super(addonManager, DWDWeatherAdapter.name, manifest.name);
         addonManager.addAdapter(this);
@@ -22,25 +26,32 @@ export class DWDWeatherAdapter extends Adapter {
             mosmixStation,
         } = manifest.moziot.config;
 
-        const config: WeatherConfig = {
-            name: 'unknown',
-            repeat: 0,
-            mosmixStation,
-            lookAheadHours: 0,
-            additionalFields: 'Neff,PPPP,FX1'
-        }
+        this.station = mosmixStation;
 
-        const dwdDevice = new DwdWeatherDevice(this, config);
-        this.handleDeviceAdded(dwdDevice);
-
-        const dwdService = new DWDService(config);
-        dwdService.start(15 * 60, data => {
-            try {
-                dwdDevice.update(data);
-            } catch (error) {
-                console.error(error)
-            }
-        });
+        this.startPairing();
     }
 
+    startPairing() {
+        if (!this.knownStations.has(this.station)) {
+            this.knownStations.add(this.station);
+            const config: WeatherConfig = {
+                name: this.station,
+                repeat: 0,
+                mosmixStation: this.station,
+                lookAheadHours: 0,
+                additionalFields: 'Neff,PPPP,FX1'
+            }
+            const dwdDevice = new DwdWeatherDevice(this, config);
+            this.handleDeviceAdded(dwdDevice);
+        }
+    }
+
+    removeThing(device: Device) {
+        if (this.devices.hasOwnProperty(device.id)) {
+            const dwdDevice = device as DwdWeatherDevice;
+            this.knownStations.delete(dwdDevice.weatherConfig.mosmixStation)
+            dwdDevice.stop();
+            this.handleDeviceRemoved(device);
+        }
+    }
 }

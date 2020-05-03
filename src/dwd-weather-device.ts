@@ -1,6 +1,6 @@
-import { Device } from 'gateway-addon';
+import { Adapter, Device } from 'gateway-addon';
 import { TemperatureProperty } from './temperature-property';
-import { WeatherConfig, WeatherData } from './dwd';
+import { DWDService, WeatherConfig, WeatherData } from './dwd';
 import { HumidityProperty } from './humidity-property';
 import { CloudCoverProperty } from './cloudcover-property';
 import { PressureProperty } from './pressure-property';
@@ -9,6 +9,7 @@ import { WindDirectionProperty } from './winddirection-property';
 import { TotalPrecipitationProperty } from './total-precipitation-property';
 import { ProbabilityPrecipitationProperty } from './relative-precipitation-property';
 import i18n from 'i18n';
+import * as crypto from 'crypto';
 
 const manifest = require('../manifest.json');
 
@@ -21,10 +22,16 @@ export class DwdWeatherDevice extends Device {
     private windDirectionProperty: WindDirectionProperty;
     private probabilityPrecipitationProperty: ProbabilityPrecipitationProperty;
     private totalPrecipitationNext24HoursProperty: TotalPrecipitationProperty;
+    private dwdService: DWDService;
+    private polling?: NodeJS.Timeout;
 
     // @ts-ignore
-    constructor(adapter: any, private weatherConfig: WeatherConfig) {
-        super(adapter, `dwdweather-${weatherConfig.mosmixStation}-${weatherConfig.lookAheadHours}`);
+    constructor(adapter: Adapter, readonly weatherConfig: WeatherConfig) {
+        const shasum = crypto.createHash('sha1');
+        shasum.update(weatherConfig.name);
+        const id = `dwdweather-${shasum.digest('hex')}`;
+
+        super(adapter, id);
         this['@context'] = 'https://iot.mozilla.org/schemas/';
         this['@type'] = ['TemperatureSensor', 'MultiLevelSensor'];
         this.name = weatherConfig.name;
@@ -44,6 +51,9 @@ export class DwdWeatherDevice extends Device {
         this.windDirectionProperty = new WindDirectionProperty(this, 'windDirection', i18n.__('windDirection'));
         this.probabilityPrecipitationProperty = new ProbabilityPrecipitationProperty(this, 'probabilityPrecipitation', i18n.__('probabilityPrecipitation'));
         this.totalPrecipitationNext24HoursProperty = new TotalPrecipitationProperty(this, 'totalPrecipitationNext24Hours', i18n.__('totalPrecipitationNext24Hours'));
+
+        this.dwdService = new DWDService(weatherConfig);
+        this.startPolling();
     }
 
     update(data: WeatherData | null) {
@@ -56,5 +66,21 @@ export class DwdWeatherDevice extends Device {
         this.windDirectionProperty.setCachedValueAndNotify(data?.winddirection || 0);
         this.probabilityPrecipitationProperty.setCachedValueAndNotify(data?.precipitation_perc || 0);
         this.totalPrecipitationNext24HoursProperty.setCachedValueAndNotify(data?.precipitationNext24h || 0);
+    }
+
+    public stop() {
+        if (this.polling) {
+            clearInterval(this.polling);
+        }
+    }
+
+    private startPolling() {
+        this.polling = this.dwdService.start(15 * 60, data => {
+            try {
+                this.update(data);
+            } catch (error) {
+                console.error(error)
+            }
+        });
     }
 }
