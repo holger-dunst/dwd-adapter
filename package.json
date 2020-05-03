@@ -62,10 +62,23 @@
         "mosmixStation"
       ],
       "properties": {
-        "mosmixStation": {
-          "type": "string",
-          "title": "Station id",
-          "description": "The Id of the measuring station"
+        "stations": {
+          "title": "DWD Stations",
+          "description": "List of stations",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "mosmixStation"
+            ],
+            "properties": {
+              "mosmixStation": {
+                "type": "string",
+                "title": "Station id",
+                "description": "The Id of the measuring station"
+              }
+            }
+          }
         }
       }
     }

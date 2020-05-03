@@ -6,7 +6,7 @@ import i18n from 'i18n';
 export class DWDWeatherAdapter extends Adapter {
     private knownStations: Set<string> = new Set();
 
-    private readonly station: string;
+    private readonly stations: any;
 
     constructor(addonManager: any, manifest: any) {
         super(addonManager, DWDWeatherAdapter.name, manifest.name);
@@ -23,26 +23,28 @@ export class DWDWeatherAdapter extends Adapter {
 
         // : 'H522', 0
         const {
-            mosmixStation,
+            stations
         } = manifest.moziot.config;
 
-        this.station = mosmixStation;
+        this.stations = stations;
 
         this.startPairing();
     }
 
     startPairing() {
-        if (!this.knownStations.has(this.station)) {
-            this.knownStations.add(this.station);
-            const config: WeatherConfig = {
-                name: this.station,
-                repeat: 0,
-                mosmixStation: this.station,
-                lookAheadHours: 0,
-                additionalFields: 'Neff,PPPP,FX1'
+        for (const station of this.stations) {
+            if (!this.knownStations.has(station.mosmixStation)) {
+                this.knownStations.add(station.mosmixStation);
+                const config: WeatherConfig = {
+                    name: station.mosmixStation,
+                    repeat: 0,
+                    mosmixStation: station.mosmixStation,
+                    lookAheadHours: 0,
+                    additionalFields: 'Neff,PPPP,FX1'
+                }
+                const dwdDevice = new DwdWeatherDevice(this, config);
+                this.handleDeviceAdded(dwdDevice);
             }
-            const dwdDevice = new DwdWeatherDevice(this, config);
-            this.handleDeviceAdded(dwdDevice);
         }
     }
 
