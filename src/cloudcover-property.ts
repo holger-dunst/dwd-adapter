@@ -5,7 +5,7 @@ export class CloudCoverProperty extends Property {
     constructor(device: DwdWeatherDevice, name: string, title: string) {
         super(device, name, {
             '@type': 'LevelProperty',
-            type: 'integer',
+            type: 'number',
             unit: 'percent',
             minimum: 0,
             maximum: 100,
