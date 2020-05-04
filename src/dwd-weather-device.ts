@@ -1,4 +1,4 @@
-import { Adapter, Device } from 'gateway-addon';
+import { Adapter, Device, Property } from 'gateway-addon';
 import { TemperatureProperty } from './temperature-property';
 import { DWDService, WeatherConfig, WeatherData } from './dwd';
 import { HumidityProperty } from './humidity-property';
@@ -56,16 +56,24 @@ export class DwdWeatherDevice extends Device {
         this.startPolling();
     }
 
+    private static updateOnChange(property: Property, newValue?: number) {
+        if (newValue !== null && property.value !== newValue) {
+            property.setCachedValueAndNotify(newValue);
+        }
+    }
+
     update(data: WeatherData | null) {
-        console.log(data);
-        this.temperature2mAboveSurfaceProperty.setCachedValueAndNotify(data?.tempc || 0);
-        this.humidityProperty.setCachedValueAndNotify(data?.humidity || 0);
-        this.effectiveCloudCoverProperty.setCachedValueAndNotify(data?.effectiveCloudCover_perc || 0);
-        this.surfacePressureReducedProperty.setCachedValueAndNotify(data?.surfacePressureReduced_Pa ? data?.surfacePressureReduced_Pa / 100 : 0);
-        this.windSpeedProperty.setCachedValueAndNotify(data?.windspeed || 0);
-        this.windDirectionProperty.setCachedValueAndNotify(data?.winddirection || 0);
-        this.probabilityPrecipitationProperty.setCachedValueAndNotify(data?.precipitation_perc || 0);
-        this.totalPrecipitationNext24HoursProperty.setCachedValueAndNotify(data?.precipitationNext24h || 0);
+        if (data) {
+            console.log(data);
+            DwdWeatherDevice.updateOnChange(this.temperature2mAboveSurfaceProperty, data.tempc);
+            DwdWeatherDevice.updateOnChange(this.humidityProperty, data.humidity);
+            DwdWeatherDevice.updateOnChange(this.effectiveCloudCoverProperty, data.effectiveCloudCover_perc);
+            DwdWeatherDevice.updateOnChange(this.surfacePressureReducedProperty, data.surfacePressureReduced_Pa ? data.surfacePressureReduced_Pa / 100 : undefined);
+            DwdWeatherDevice.updateOnChange(this.windSpeedProperty, data.windspeed);
+            DwdWeatherDevice.updateOnChange(this.windDirectionProperty, data.winddirection);
+            DwdWeatherDevice.updateOnChange(this.probabilityPrecipitationProperty, data.precipitation_perc);
+            DwdWeatherDevice.updateOnChange(this.totalPrecipitationNext24HoursProperty, data.precipitationNext24h);
+        }
     }
 
     public stop() {
